@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"math/rand"
 	"net/http"
 	"time"
 )
@@ -53,7 +54,6 @@ func New(des string, start, expires, interval int64) *Task {
 			}
 			now = time.Now()
 			if now.Unix() > start {
-				fmt.Println("\n")
 				fmt.Print(t.Des, "*")
 			}
 			if now.Unix() > expires {
@@ -69,17 +69,26 @@ func New(des string, start, expires, interval int64) *Task {
 func main() {
 	now := time.Now()
 	thr := now.Add(time.Second * 3).Unix()
-	t := New("des", now.Unix(), thr, 0)
-	tasks = append(tasks, t)
-	tasks = append(tasks, New("sec", now.Unix(), thr, 0))
+	tasks = append(tasks, New("first", now.Unix(), thr, 0))
 	http.HandleFunc("/", index)
+	http.HandleFunc("/add", add)
+	http.HandleFunc("/clear", clear)
 	http.ListenAndServe(":80", nil)
-	t.Status = false
-	time.Sleep(2e9)
-	t.Status = true
-	time.Sleep(10e9)
 }
 
 func index(rw http.ResponseWriter, req *http.Request) {
+	index_tpl.Execute(rw, tasks)
+}
+
+func add(rw http.ResponseWriter, req *http.Request) {
+	i := rand.Intn(60)
+	now := time.Now()
+	d := (time.Duration)(int64(i) * 1e9)
+	tasks = append(tasks, New(fmt.Sprintf("%d", i), now.Unix(), now.Add(d).Unix(), 0))
+	http.Redirect(rw, req, "/", 302)
+}
+
+func clear(rw http.ResponseWriter, req *http.Request) {
+	tasks = make([]*Task, 0, 100)
 	index_tpl.Execute(rw, tasks)
 }

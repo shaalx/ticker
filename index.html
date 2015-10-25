@@ -1,10 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://cdn.bootcss.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="http://static.bootcss.com/www/assets/css/site.min.css?v5" rel="stylesheet">
+	<title>ticker</title>
 </head>
 <body>
 <div class="container">
+	<nav class="navbar navbar-default" role="navigation" id="navbar">
+		<div class="collapse navbar-collapse navbar-ex1-collapse">
+			<ul class="nav navbar-nav" id="menu">
+				<li><a href="/">home</a></li>
+				<li class="active"><a href="/add">add</a></li>
+				<li><a href="/clear">clear</a></li>
+			</ul>
+		</div>
+	</nav>
 	{{range .}}
 		<div>
 			<h2>{{.Des}}</h2>
