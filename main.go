@@ -89,6 +89,9 @@ func add(rw http.ResponseWriter, req *http.Request) {
 }
 
 func clear(rw http.ResponseWriter, req *http.Request) {
+	for _, it := range tasks {
+		it.Status = false
+	}
 	tasks = make([]*Task, 0, 100)
 	index_tpl.Execute(rw, tasks)
 }
