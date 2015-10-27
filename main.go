@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"math/rand"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -47,6 +48,7 @@ func New(des string, start, expires, interval int64) *Task {
 	var now time.Time
 	ticker := time.NewTicker(time.Millisecond * 1000)
 	go func() {
+		i, _ := strconv.Atoi(t.Des)
 		for {
 			<-ticker.C
 			if !t.Status {
@@ -54,13 +56,14 @@ func New(des string, start, expires, interval int64) *Task {
 			}
 			now = time.Now()
 			if now.Unix() > start {
-				fmt.Print(t.Des, "*")
+				fmt.Printf("%s(%d)-", t.Des, i)
 			}
 			if now.Unix() > expires {
 				fmt.Print(t.Des, "END\n")
 				t.Status = false
 				break
 			}
+			i--
 		}
 	}()
 	return t
@@ -77,6 +80,13 @@ func main() {
 }
 
 func index(rw http.ResponseWriter, req *http.Request) {
+	new_tasks := make([]*Task, 0, cap(tasks))
+	for _, it := range tasks {
+		if it.Expires > time.Now().Unix() {
+			new_tasks = append(new_tasks, it)
+		}
+	}
+	tasks = new_tasks
 	index_tpl.Execute(rw, tasks)
 }
 
