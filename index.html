@@ -19,10 +19,10 @@
 	</nav>
 	{{range .}}
 		<div>
-			<h2>{{.Des}}</h2>
-			<h3>{{.DStart}}</h3>
-			<h3>{{.DExpires}}</h3>
-			<h3>{{.Status}}</h3>
+			<h2>Description: {{.Des}}</h2>
+			<h3>Last: {{.Seconds}}</h3>
+			<h3>Start   : {{.DStart}}</h3>
+			<h3>Expires : {{.DExpires}}</h3>
 		</div>
 		<hr>
 	{{end}}

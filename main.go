@@ -5,13 +5,13 @@ import (
 	"html/template"
 	"math/rand"
 	"net/http"
-	"strconv"
 	"time"
 )
 
 type Task struct {
 	Des       string // description
-	Start     int64  // start time
+	Seconds   int64
+	Start     int64 // start time
 	DStart    string
 	Expires   int64 // expires time
 	DExpires  string
@@ -39,7 +39,7 @@ func DisplayTime(t int64) string {
 }
 
 func New(des string, start, expires, interval int64) *Task {
-	t := &Task{Des: des, Start: start, DStart: DisplayTime(start), Expires: expires, DExpires: DisplayTime(expires)}
+	t := &Task{Des: des, Seconds: (expires - start), Start: start, DStart: DisplayTime(start), Expires: expires, DExpires: DisplayTime(expires)}
 	if interval > 0 {
 		t.Itervaled = true
 		t.Iterval = interval
@@ -48,7 +48,7 @@ func New(des string, start, expires, interval int64) *Task {
 	var now time.Time
 	ticker := time.NewTicker(time.Millisecond * 1000)
 	go func() {
-		i, _ := strconv.Atoi(t.Des)
+		i := t.Seconds
 		for {
 			<-ticker.C
 			if !t.Status {
