@@ -6,6 +6,8 @@ import (
 	"math/rand"
 	"net/http"
 	"time"
+
+	"github.com/everfore/gotest/mail"
 )
 
 type Excutor interface {
@@ -19,6 +21,7 @@ func (e *MailExcutor) Excute() {
 	fmt.Println("\n****************************")
 	fmt.Println("Time is over!")
 	fmt.Println("****************************")
+	mail.SendMail("Time is over")
 }
 
 type Task struct {
