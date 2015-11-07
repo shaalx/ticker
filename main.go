@@ -8,6 +8,19 @@ import (
 	"time"
 )
 
+type Excutor interface {
+	Excute()
+}
+
+type MailExcutor struct {
+}
+
+func (e *MailExcutor) Excute() {
+	fmt.Println("\n****************************")
+	fmt.Println("Time is over!")
+	fmt.Println("****************************")
+}
+
 type Task struct {
 	Des       string // description
 	Seconds   int64
@@ -15,9 +28,10 @@ type Task struct {
 	DStart    string
 	Expires   int64 // expires time
 	DExpires  string
-	Iterval   int64 // interval time
-	Itervaled bool  // interval ?
-	Status    bool  // on off
+	Iterval   int64   // interval time
+	Itervaled bool    // interval ?
+	Status    bool    // on off
+	Exc       Excutor // excutor
 }
 
 var (
@@ -39,7 +53,7 @@ func DisplayTime(t int64) string {
 }
 
 func New(des string, start, expires, interval int64) *Task {
-	t := &Task{Des: des, Seconds: (expires - start), Start: start, DStart: DisplayTime(start), Expires: expires, DExpires: DisplayTime(expires)}
+	t := &Task{Des: des, Seconds: (expires - start), Start: start, DStart: DisplayTime(start), Expires: expires, DExpires: DisplayTime(expires), Exc: &MailExcutor{}}
 	if interval > 0 {
 		t.Itervaled = true
 		t.Iterval = interval
@@ -59,7 +73,8 @@ func New(des string, start, expires, interval int64) *Task {
 				fmt.Printf("%s(%d)-", t.Des, i)
 			}
 			if now.Unix() > expires {
-				fmt.Print(t.Des, "END\n")
+				// fmt.Print(t.Des, "END\n")
+				t.Exc.Excute()
 				t.Status = false
 				break
 			}
